@@ -1,0 +1,50 @@
+/* === FONT IMPORTS === */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Nanum+Pen+Script&family=Noto+Sans:wght@400;600&display=swap');
+
+/* === CSS COLOR & THEME TOKENS === */
+:root {
+  /* -- Light Theme (Default) -- */
+  --bg: #f8f5ec;
+  --paper: #fffdf8;
+  --ink: #3b3028;
+  --accent: #c97c5d;
+  --muted: #9d8b7a;
+  --line: #e0d8c3;
+  --paper-shadow: rgba(0, 0, 0, 0.08);
+  --focus-ring: #c97c5d55;
+}
+
+[data-theme='dark'] {
+  /* -- Dark Theme -- */
+  --bg: #3b3028;
+  --paper: #4a3f36;
+  --ink: #f8f5ec;
+  --accent: #e39d82;
+  --muted: #a9988a;
+  --line: #63544a;
+  --paper-shadow: rgba(0, 0, 0, 0.2);
+  --focus-ring: #e39d8255;
+}
+
+/* === BASE STYLES === */
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Sans', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* === ACCESSIBILITY: FOCUS RING === */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

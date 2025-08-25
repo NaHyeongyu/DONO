@@ -1,0 +1,99 @@
+.miniCalendar {
+  width: 100%;
+  padding: 0.5rem 0; /* Reduced vertical padding */
+  border-top: none; /* Removed border-top */
+  margin-top: 1rem; /* Reduced margin-top */
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.monthYear {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 0.9rem; /* Reduced font size */
+}
+
+.navButton {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.1rem; /* Reduced padding */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.navButton:hover {
+  background-color: var(--line);
+  color: var(--ink);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px; /* Reduced gap back to 2px */
+}
+
+.weekDay {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding-bottom: 0.5rem;
+}
+
+.dayCell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dayButton {
+  width: 32px; /* Fixed width */
+  height: 32px; /* Fixed height, same as width for perfect circle */
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dayButton:hover {
+  background-color: var(--line);
+}
+
+.dayButton.selected {
+  background-color: var(--accent);
+  color: var(--paper);
+  font-weight: 600;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.dayButton.hasTasks {
+  position: relative;
+}
+
+.dayButton.hasTasks::after {
+  content: '';
+  position: absolute;
+  bottom: 4px; /* Adjusted position relative to new button height */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent);
+  border-radius: 50%;
+}

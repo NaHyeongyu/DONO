@@ -1,0 +1,83 @@
+.pickerContainer {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: 300px;
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px var(--paper-shadow);
+  z-index: 10;
+  padding: 1rem;
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.monthYear {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.navButton {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.navButton:hover {
+  background-color: var(--line);
+  color: var(--ink);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.weekDay {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  padding-bottom: 0.5rem;
+}
+
+.dayCell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dayButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background-color: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dayButton:hover {
+  background-color: var(--line);
+}
+
+.dayButton.selected {
+  background-color: var(--accent);
+  color: var(--paper);
+  font-weight: 600;
+}

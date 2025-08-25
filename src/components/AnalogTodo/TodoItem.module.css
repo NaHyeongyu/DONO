@@ -1,0 +1,110 @@
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.25rem;
+  border-bottom: 1px dotted var(--line);
+  transition: opacity 0.2s ease;
+}
+.lastItem {
+  border-bottom: none;
+}
+
+.item:hover .deleteButton {
+  opacity: 1;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  flex-grow: 1;
+}
+
+.text {
+  color: var(--ink);
+  transition: color 0.15s ease;
+  position: relative;
+}
+
+.text.done {
+  color: var(--muted);
+}
+
+/* Strikethrough animation */
+.text.done::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 1px;
+  background-color: var(--muted);
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: strike 0.2s ease-out forwards;
+}
+
+@keyframes strike {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  opacity: 0.2;
+  transition: opacity 0.15s ease;
+  color: var(--accent);
+}
+.deleteButton:hover {
+  opacity: 1 !important;
+}
+
+/* Custom Checkbox */
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.customCheckbox {
+  height: 20px;
+  width: 20px;
+  border: 2px solid var(--muted);
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  transition: border-color 0.15s ease;
+}
+
+.label:hover .customCheckbox {
+  border-color: var(--ink);
+}
+
+.customCheckbox::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.15s ease-out;
+}
+
+.checkbox:checked + .customCheckbox {
+  border-color: var(--accent);
+}
+
+.checkbox:checked + .customCheckbox::after {
+  transform: translate(-50%, -50%) scale(1);
+}

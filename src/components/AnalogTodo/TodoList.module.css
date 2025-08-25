@@ -1,0 +1,10 @@
+.list {
+  list-style: none;
+}
+
+.emptyState {
+  text-align: center;
+  color: var(--muted);
+  padding: 2rem 0;
+  font-style: italic;
+}

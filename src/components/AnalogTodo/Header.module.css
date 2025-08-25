@@ -1,0 +1,55 @@
+.header {
+  display: flex;
+  justify-content: flex-start; /* Changed to flex-start */
+  align-items: center;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 1rem;
+}
+
+/* New wrapper for positioning the DatePicker */
+.dateNavWrapper {
+    position: relative;
+}
+
+.dateContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.date {
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  /* Reset button styles */
+  background: none;
+  border: none;
+  text-align: center;
+}
+
+.date:hover {
+    background-color: var(--line);
+}
+
+.navButton {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navButton:hover {
+    background-color: var(--line);
+    color: var(--ink);
+}

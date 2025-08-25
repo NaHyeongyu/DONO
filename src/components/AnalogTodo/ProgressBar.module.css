@@ -1,0 +1,48 @@
+.container {
+  width: 100%;
+  margin-bottom: 1rem;
+  font-family: 'Noto Sans', sans-serif;
+  text-align: center;
+}
+
+.labelBelow {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.donutChart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px; /* Explicitly set height to match width */
+  margin: 0 auto;
+  position: relative;
+}
+
+.svg {
+  width: 100%; /* Ensure SVG takes full width of its container */
+  height: 100%; /* Ensure SVG takes full height of its container */
+  transform: rotate(-90deg);
+}
+
+.circleBackground {
+  fill: none;
+  stroke: var(--line);
+}
+
+.circleFill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease-out;
+}
+
+.percentageText {
+  fill: var(--ink);
+  font-size: 1.2rem;
+  font-weight: 600;
+  transform: rotate(90deg);
+  transform-origin: 50% 50%;
+}

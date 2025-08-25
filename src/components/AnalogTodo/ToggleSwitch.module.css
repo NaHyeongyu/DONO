@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+
+.label {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px; /* Width of the switch */
+  height: 24px; /* Height of the switch */
+}
+
+.checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--line); /* Background when off */
+  transition: 0.4s;
+  border-radius: 24px; /* Rounded corners */
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px; /* Size of the circle */
+  width: 18px; /* Size of the circle */
+  left: 3px; /* Initial position */
+  bottom: 3px; /* Initial position */
+  background-color: var(--paper); /* Color of the circle */
+  transition: 0.4s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.checkbox:checked + .slider {
+  background-color: var(--accent); /* Background when on */
+}
+
+.checkbox:checked + .slider:before {
+  transform: translateX(24px); /* Move circle to the right */
+}

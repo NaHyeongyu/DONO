@@ -1,0 +1,52 @@
+.sidebar {
+  width: 280px; /* Fixed width */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: var(--bg);
+  border-right: 1px solid var(--line);
+  padding: 2rem 1.5rem; /* Consistent padding */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* Adjusted gap for cleaner look */
+  transition: all 0.3s ease; /* Re-added transition for smooth changes */
+  overflow-x: hidden;
+  overflow-y: auto; /* Added for vertical scrolling */
+  z-index: 100;
+}
+
+.logo {
+  font-family: 'Merriweather', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--ink);
+  white-space: nowrap;
+  margin-bottom: 1rem; /* Keep some margin below logo */
+}
+
+/* General styling for direct children of sidebar for better visual flow */
+.sidebar > *:not(.logo) { /* Apply to all children except logo */
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.settingsLinkContainer {
+  margin-top: auto; /* Pushes the link to the bottom */
+  padding-top: 1rem;
+  border-top: 1px dashed var(--line);
+  text-align: center;
+}
+
+.settingsLink {
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.settingsLink:hover {
+  color: var(--ink);
+}
