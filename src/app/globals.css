@@ -1,5 +1,8 @@
+@import "tailwindcss";
+
 /* === FONT IMPORTS === */
 @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Nanum+Pen+Script&family=Noto+Sans:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Cormorant+Garamond:wght@700&family=DM+Serif+Display:ital@0;1&display=swap');
 
 /* === CSS COLOR & THEME TOKENS === */
 :root {
@@ -12,6 +15,7 @@
   --line: #e0d8c3;
   --paper-shadow: rgba(0, 0, 0, 0.08);
   --focus-ring: #c97c5d55;
+  --logo-font: 'Merriweather', serif; /* default logo font */
 }
 
 [data-theme='dark'] {

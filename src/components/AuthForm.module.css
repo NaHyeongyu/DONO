@@ -1,0 +1,106 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: var(--bg);
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--paper);
+  border: 1px dotted var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px var(--paper-shadow);
+  padding: 2rem;
+}
+
+.logo {
+  font-family: var(--logo-font), serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: 0.06em;
+}
+
+.header {
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.box {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  background-color: var(--paper);
+}
+
+.footer {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* --- Auth inner elements styling --- */
+.box label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.box input,
+.box select,
+.box textarea {
+  width: 100%;
+  background-color: var(--paper);
+  border: 1px dotted var(--line);
+  color: var(--ink);
+  padding: 0.625rem 0.75rem;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.box input:focus,
+.box select:focus,
+.box textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+.box button {
+  background-color: var(--accent);
+  color: #fffdf8;
+  border: 1px dotted var(--line);
+  border-radius: 12px;
+  height: 44px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.box button:hover {
+  filter: brightness(1.05);
+}
+
+.box a {
+  color: var(--accent);
+  text-decoration: none;
+}

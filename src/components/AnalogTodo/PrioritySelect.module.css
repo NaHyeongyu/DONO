@@ -1,0 +1,118 @@
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+.button {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0.25rem 0.5rem;
+  padding-right: 1.75rem; /* space for caret */
+  font-size: 0.875rem;
+  line-height: 1.2;
+  cursor: pointer;
+  width: 7.25rem; /* fixed width for consistent layout across Low/Medium/High */
+  white-space: nowrap; /* avoid wrapping */
+  text-align: left; /* left-align label inside fixed width */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239aa0a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+.button:hover {
+  border-color: color-mix(in srgb, var(--line) 85%, var(--ink) 15%);
+  background: color-mix(in srgb, var(--paper) 97%, var(--ink) 3%);
+}
+.button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+/* Priority modifiers define variables used by inner elements */
+.buttonLow {
+  --pri-color: #16a34a; /* green-600 */
+  --pri-bg: color-mix(in srgb, #16a34a 6%, transparent);
+}
+.buttonMedium {
+  --pri-color: #ca8a04; /* yellow-600 */
+  --pri-bg: color-mix(in srgb, #ca8a04 6%, transparent);
+}
+.buttonHigh {
+  --pri-color: #dc2626; /* red-600 */
+  --pri-bg: color-mix(in srgb, #dc2626 6%, transparent);
+}
+
+/* Subtle left bar and very light tint to match classic, subdued theme */
+.button.buttonLow,
+.button.buttonMedium,
+.button.buttonHigh {
+  box-shadow: inset 1px 0 0 var(--pri-color), inset 0 0 0 9999px var(--pri-bg);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pri-color);
+}
+
+/* Popup listbox */
+.listbox {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  min-width: 100%;
+  padding: 4px;
+  margin: 0;
+  list-style: none;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--ink) 12%, transparent);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.option:hover,
+.optionActive {
+  background: color-mix(in srgb, var(--paper) 92%, var(--ink) 8%);
+}
+.optionSelected {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.optionDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

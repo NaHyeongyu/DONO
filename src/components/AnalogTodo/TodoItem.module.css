@@ -3,20 +3,25 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 0.25rem;
-  border-bottom: 1px dotted var(--line);
-  transition: opacity 0.2s ease;
+  border-bottom: 1px solid var(--line);
+  transition: opacity 0.3s ease, transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease; /* smoother DnD */
+  transform-origin: left center; /* For consistent transform origin */
+}
+.item + .item {
+  margin-top: 0.375rem; /* clearer separation between items */
 }
 .lastItem {
   border-bottom: none;
 }
 
-.item:hover .deleteButton {
-  opacity: 1;
+.itemDone {
+  opacity: 0.4; /* Fade out more */
+  /* Keep size and interactivity; no movement or scaling to allow re-selection */
 }
 
 .label {
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Align checkbox to first line for multi-line text */
   gap: 0.75rem;
   cursor: pointer;
   flex-grow: 1;
@@ -26,43 +31,47 @@
   color: var(--ink);
   transition: color 0.15s ease;
   position: relative;
+  white-space: pre-wrap; /* keep line breaks, allow wrapping */
+  word-break: break-word; /* break long words */
+  overflow-wrap: anywhere; /* additional safeguard for long tokens */
+  flex: 1; /* occupy remaining row width */
 }
 
 .text.done {
   color: var(--muted);
+  text-decoration: line-through; /* Strike through all wrapped lines */
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--ink);
 }
 
-/* Strikethrough animation */
-.text.done::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  height: 1px;
-  background-color: var(--muted);
-  width: 100%;
-  transform: scaleX(0);
-  transform-origin: left;
-  animation: strike 0.2s ease-out forwards;
-}
-
-@keyframes strike {
-  to {
-    transform: scaleX(1);
-  }
-}
+/* Removed pseudo-element strike animation to ensure proper multi-line strikethrough */
 
 .deleteButton {
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.25rem;
-  opacity: 0.2;
+  opacity: 0.8; /* more visible by default */
   transition: opacity 0.15s ease;
   color: var(--accent);
+  font-weight: 600;
+  line-height: 1;
 }
 .deleteButton:hover {
   opacity: 1 !important;
+  text-decoration: underline; /* clearer affordance */
+}
+
+/* Keyboard accessibility */
+.deleteButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Make the X icon a bit larger */
+.deleteButton svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* Custom Checkbox */
@@ -82,6 +91,24 @@
   display: inline-block;
   position: relative;
   transition: border-color 0.15s ease;
+  flex-shrink: 0; /* prevent shrinking */
+  margin-top: 2px; /* slight visual alignment with first text line */
+}
+
+/* Edit mode textarea */
+.editArea {
+  display: block;
+  width: 100%;
+  min-height: 1.5em;
+  line-height: 1.5;
+  padding: 0;
+  margin: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  resize: none; /* we auto-resize via JS */
+  box-shadow: none;
 }
 
 .label:hover .customCheckbox {
@@ -107,4 +134,100 @@
 
 .checkbox:checked + .customCheckbox::after {
   transform: translate(-50%, -50%) scale(1);
+}
+
+/* Drag handle button */
+.dragHandle {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: grab;
+  padding: 0.25rem 0.35rem;
+  border-radius: 4px;
+  line-height: 1;
+}
+.dragHandle:active {
+  cursor: grabbing;
+}
+.dragHandle:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
+}
+.dragHandle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Priority selector */
+.prioritySelect {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0.25rem 0.5rem;
+  padding-right: 1.75rem; /* space for caret */
+  font-size: 0.875rem;
+  margin-right: 0.5rem;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239aa0a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+.prioritySelect:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+/* Priority color modifiers */
+.priorityLow {
+  --pri-color: #16a34a; /* green-600 */
+  --pri-bg: color-mix(in srgb, #16a34a 6%, transparent);
+}
+.priorityMedium {
+  --pri-color: #ca8a04; /* yellow-600 */
+  --pri-bg: color-mix(in srgb, #ca8a04 6%, transparent);
+}
+.priorityHigh {
+  --pri-color: #dc2626; /* red-600 */
+  --pri-bg: color-mix(in srgb, #dc2626 6%, transparent);
+}
+
+.prioritySelect.priorityLow,
+.prioritySelect.priorityMedium,
+.prioritySelect.priorityHigh {
+  /* Keep neutral text/border; show subtle left bar with soft tint */
+  border-color: var(--line);
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: inset 1px 0 0 var(--pri-color), inset 0 0 0 9999px var(--pri-bg);
+}
+
+.prioritySelect:hover {
+  border-color: color-mix(in srgb, var(--line) 85%, var(--ink) 15%);
+  background: color-mix(in srgb, var(--paper) 97%, var(--ink) 3%);
+}
+
+/* Drag states */
+.dragging {
+  transform: scale(1.01);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--ink) 18%, transparent);
+}
+
+.dragOver {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  outline: 2px dashed color-mix(in srgb, var(--accent) 65%, var(--ink) 35%);
+  outline-offset: -4px; /* keeps within row */
+}
+
+/* Actions container for drag handle, priority, edit, delete */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem; /* consistent spacing between controls */
+  margin-left: 0.5rem; /* breathing room from text */
 }

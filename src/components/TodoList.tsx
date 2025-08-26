@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { type User } from '@supabase/supabase-js'
+import { useI18n } from '@/i18n/I18nProvider'
 
 // Note: This is a simplified type. In a real app, you'd want a more robust type definition.
 type Todo = {
@@ -15,6 +16,7 @@ export default function TodoList({ initialTodos, user }: { initialTodos: Todo[],
   const supabase = createClient()
   const [todos, setTodos] = useState(initialTodos)
   const [newTask, setNewTask] = useState('')
+  const { t } = useI18n()
 
   const handleAddTask = async () => {
     if (newTask.trim() === '') return
@@ -69,12 +71,13 @@ export default function TodoList({ initialTodos, user }: { initialTodos: Todo[],
   return (
     <div className="w-full max-w-2xl p-8 mx-auto mt-10 bg-white rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">Todo List</h1>
+            <h1 className="text-3xl font-bold text-gray-800">{t('simpleTodo.title')}</h1>
             <button 
                 onClick={handleLogout}
                 className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                aria-label={t('simpleTodo.aria.logoutButton')}
             >
-                Logout
+                {t('simpleTodo.logout')}
             </button>
         </div>
         <div className="flex gap-2 mb-6">
@@ -82,14 +85,16 @@ export default function TodoList({ initialTodos, user }: { initialTodos: Todo[],
                 type="text"
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
-                placeholder="Add a new task"
+                placeholder={t('simpleTodo.placeholder')}
                 className="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label={t('simpleTodo.aria.input')}
             />
             <button
                 onClick={handleAddTask}
                 className="px-6 py-3 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                aria-label={t('simpleTodo.aria.addButton')}
             >
-                Add
+                {t('simpleTodo.add')}
             </button>
         </div>
         <ul>
@@ -110,7 +115,7 @@ export default function TodoList({ initialTodos, user }: { initialTodos: Todo[],
                         onClick={() => handleDeleteTask(todo.id)}
                         className="ml-4 px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none"
                     >
-                        Delete
+                        {t('simpleTodo.delete')}
                     </button>
                 </li>
             ))}

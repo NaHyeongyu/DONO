@@ -1,0 +1,140 @@
+{
+  "sidebar": {
+    "nav": {
+      "label": "목표",
+      "shortTerm": "단기 목표",
+      "longTerm": "장기 목표"
+    },
+    "settings": "설정"
+  },
+  "home": {
+    "tasks": "할 일",
+    "footerNote": "기록하면, 이루어진다."
+  },
+  "newTodo": {
+    "placeholder": "할 일을 적어보세요…",
+    "add": "추가",
+    "aria": {
+      "input": "새 할 일 입력",
+      "addButton": "할 일 추가"
+    }
+  },
+  "newGoal": {
+    "placeholder": "목표를 적어보세요…",
+    "add": "추가",
+    "aria": {
+      "input": "새 목표 입력",
+      "addButton": "목표 추가"
+    }
+  },
+  "goals": {
+    "short": {
+      "title": "단기 목표",
+      "desc": "단기 목표를 계획하고 추적하세요. (준비 중)"
+    },
+    "long": {
+      "title": "장기 목표",
+      "desc": "장기 목표를 계획하고 추적하세요. (준비 중)"
+    },
+    "todayCount": "오늘은 {count}개의 할 일이 있어요.",
+    "loading": "불러오는 중…",
+    "empty": "아직 목표가 없습니다. 위에서 추가하세요!",
+    "actions": {
+      "complete": "완료",
+      "undo": "되돌리기",
+      "delete": "삭제",
+      "edit": "수정",
+      "save": "저장",
+      "cancel": "취소"
+    },
+    "sections": {
+      "active": "진행 중",
+      "completed": "완료됨"
+    }
+  },
+  "header": {
+    "aria": {
+      "prevDay": "이전 날짜",
+      "nextDay": "다음 날짜"
+    }
+  },
+  "settings": {
+    "title": "설정",
+    "back": "뒤로",
+    "logout": "로그아웃",
+    "myInfo": "내 정보",
+    "labels": {
+      "name": "이름",
+      "email": "이메일",
+      "provider": "가입 경로",
+      "lastSignIn": "마지막 로그인",
+      "joined": "가입일"
+    },
+    "notSignedIn": "로그인되지 않았습니다.",
+    "darkMode": {
+      "title": "다크 모드",
+      "label": "다크 모드 사용"
+    },
+    "language": {
+      "title": "언어",
+      "en": "영어",
+      "ko": "한국어"
+    },
+    "calendar": {
+      "weekStart": {
+        "title": "주 시작 요일",
+        "sunday": "일요일",
+        "monday": "월요일"
+      }
+    }
+  },
+  "calendar": {
+    "aria": {
+      "prevMonth": "이전 달",
+      "nextMonth": "다음 달",
+      "selectDate": "{date} 선택"
+    }
+  },
+  "todoItem": {
+    "edit": "수정",
+    "aria": {
+      "editInput": "할 일 수정",
+      "editButton": "작업 수정: {text}",
+      "deleteButton": "작업 삭제: {text}",
+      "prioritySelect": "우선순위 변경: {text}",
+      "dragHandle": "드래그하여 순서 변경: {text}"
+    }
+  },
+  "progressBar": {
+    "label": "하루 진행도",
+    "labelWithPercent": "하루 진행도: {percent}%"
+  },
+  "auth": {
+    "subtitle": "작업을 계속하려면 로그인하세요",
+    "footerText": "계속하면 약관 및 개인정보 처리방침에 동의하는 것입니다."
+  },
+  "todoList": {
+    "empty": "아직 할 일이 없습니다. 위에서 추가하세요!",
+    "sections": {
+      "active": "진행 중",
+      "completed": "완료됨"
+    }
+  },
+  "simpleTodo": {
+    "title": "할 일 목록",
+    "logout": "로그아웃",
+    "placeholder": "새 작업 추가",
+    "add": "추가",
+    "delete": "삭제",
+    "aria": {
+      "addButton": "작업 추가",
+      "logoutButton": "로그아웃",
+      "input": "새 작업 입력"
+    }
+  },
+  "priority": {
+    "low": "낮음",
+    "medium": "보통",
+    "high": "높음"
+  }
+}

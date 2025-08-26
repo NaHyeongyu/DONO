@@ -47,3 +47,62 @@
   border-bottom: 1px dashed var(--line);
   padding-bottom: 0.5rem;
 }
+
+.logoutButton {
+  background-color: var(--accent);
+  color: var(--paper);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: #b36a4e; /* Slightly darker accent */
+}
+
+/* My Info layout */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  row-gap: 0.5rem;
+  column-gap: 1rem;
+  align-items: center;
+}
+
+.label {
+  color: var(--muted);
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 0.9rem;
+}
+
+.value {
+  color: var(--ink);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.avatarValue {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatarImg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px dashed var(--line);
+  object-fit: cover;
+  background: var(--paper);
+}
+
+.name {
+  font-weight: 700;
+}

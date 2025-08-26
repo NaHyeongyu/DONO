@@ -1,0 +1,244 @@
+.container {
+  margin-top: 1rem;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Section titles for Active / Completed */
+.sectionTitle {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.dot {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.title {
+  color: var(--ink);
+}
+
+.title.completed {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.dot.completed {
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-left: 0.5rem;
+  justify-self: end;
+}
+
+.actionButton {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.8rem;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+.actionButton:hover {
+  background: color-mix(in srgb, var(--paper) 94%, var(--ink) 6%);
+}
+
+/* Export-only helper to ensure CSS Modules exposes `completed` */
+.completed { --completed-flag: 1; }
+
+/* Subtle text buttons for clearer actions */
+.textButton {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  color: var(--ink);
+  border: none;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.textButton:hover {
+  background: color-mix(in srgb, var(--paper) 94%, var(--ink) 6%);
+}
+
+.textButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Accent-styled action buttons to match Todo (Edit / x) */
+.accentButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  opacity: 0.8;
+  transition: opacity 0.15s ease;
+  color: var(--accent);
+  font-weight: 600;
+  line-height: 1;
+}
+.accentButton:hover {
+  opacity: 1 !important;
+  text-decoration: underline;
+}
+.accentButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Inline edit input */
+.editInput {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  font: inherit;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.editInput:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Drag handle and drag states (mirror TodoItem) */
+.dragHandle {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: grab;
+  padding: 0.25rem 0.35rem;
+  border-radius: 4px;
+  line-height: 1;
+}
+.dragHandle:active {
+  cursor: grabbing;
+}
+.dragHandle:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
+}
+.dragHandle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.dragging {
+  transform: scale(1.01);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--ink) 18%, transparent);
+}
+
+.dragOver {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  outline: 2px dashed color-mix(in srgb, var(--accent) 65%, var(--ink) 35%);
+  outline-offset: -4px;
+}
+
+/* Label + Checkbox + Text to mirror Todo item */
+.label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.customCheckbox {
+  height: 20px;
+  width: 20px;
+  border: 2px solid var(--muted);
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  transition: border-color 0.15s ease;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.label:hover .customCheckbox {
+  border-color: var(--ink);
+}
+
+.customCheckbox::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.15s ease-out;
+}
+
+.checkbox:checked + .customCheckbox {
+  border-color: var(--accent);
+}
+
+.checkbox:checked + .customCheckbox::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.text {
+  color: var(--ink);
+  transition: color 0.15s ease;
+  position: relative;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  flex: 1;
+}
+
+.textDone {
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--ink);
+}

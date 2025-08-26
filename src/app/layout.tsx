@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,10 +25,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(() => { try { const t = localStorage.getItem('theme') || 'light'; document.documentElement.setAttribute('data-theme', t); const savedLoc = localStorage.getItem('locale'); const nav = navigator.language || 'en'; const loc = savedLoc === 'ko' || savedLoc === 'en' ? savedLoc : (nav.toLowerCase().startsWith('ko') ? 'ko' : 'en'); document.documentElement.setAttribute('lang', loc); document.documentElement.setAttribute('data-locale', loc); } catch (_) {} })();`,
+          }}
+        />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

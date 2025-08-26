@@ -1,13 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useMemo } from 'react';
-import { Todo } from '@/types';
-import Header from '@/components/AnalogTodo/Header';
-import NewTodoInput from '@/components/AnalogTodo/NewTodoInput';
-import TodoList from '@/components/AnalogTodo/TodoList';
-import Footer from '@/components/AnalogTodo/Footer';
-import Sidebar from '@/components/AnalogTodo/Sidebar';
-import { createClient as createClientComponentClient } from '@/utils/supabase/client'; // Import client-side client
+import { useState, useEffect, useMemo } from "react";
+import { Todo } from "@/types";
+import Header from "@/components/AnalogTodo/Header";
+import NewTodoInput from "@/components/AnalogTodo/NewTodoInput";
+import TodoList from "@/components/AnalogTodo/TodoList";
+import Footer from "@/components/AnalogTodo/Footer";
+import Sidebar from "@/components/AnalogTodo/Sidebar";
+import AuthForm from "@/components/AuthForm"; // Import AuthForm
+import { createClient as createClientComponentClient } from "@/utils/supabase/client"; // Import client-side client
+import { db } from "@/lib/db"; // Import Dexie DB
+import { type User } from "@supabase/supabase-js";
+import { useI18n } from "@/i18n/I18nProvider";
+import { useSearchParams } from "next/navigation";
 
 // --- UTILITY FUNCTIONS ---
 
@@ -21,91 +26,242 @@ const isSameDay = (d1: Date, d2: Date) =>
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [user, setUser] = useState<User | null>(null); // Keep user state for AuthForm
+  const [mounted, setMounted] = useState(false);
+  const [draggingId, setDraggingId] = useState<number | null>(null);
+  const { t } = useI18n();
+  const searchParams = useSearchParams();
 
-  // Supabase client (client-side)
-  const supabase = createClientComponentClient(); // Use client-side client
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const fetchTodos = async () => {
-      const { data, error } = await supabase
-        .from('todos')
-        .select('*')
-        .order('inserted_at', { ascending: true });
+    // Fetch user and todos from Dexie
+    const fetchUserAndTodos = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
 
-      if (error) {
-        console.error('Error fetching todos:', error);
-      } else {
-        setTodos(data as Todo[]);
-      }
+      const allTodos = await db.todos.toArray();
+      setTodos(allTodos);
     };
-    fetchTodos();
+
+    fetchUserAndTodos();
+
+    // Listen for auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user || null);
+        // Re-fetch todos if auth state changes (e.g., user logs in/out)
+        if (session?.user) {
+          const fetchOnAuthChange = async () => {
+            const allTodos = await db.todos.toArray();
+            setTodos(allTodos);
+          };
+          fetchOnAuthChange();
+        } else {
+          setTodos([]); // Clear todos if user logs out
+        }
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, [supabase]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Sync selected date from URL query (?date=YYYY-MM-DD)
+  useEffect(() => {
+    const q = searchParams.get("date");
+    if (!q) return;
+    const [y, m, d] = q.split("-");
+    if (!y || !m || !d) return;
+    const yy = Number(y);
+    const mm = Number(m);
+    const dd = Number(d);
+    if (Number.isNaN(yy) || Number.isNaN(mm) || Number.isNaN(dd)) return;
+    const parsed = new Date(yy, mm - 1, dd);
+    if (!isNaN(parsed.getTime())) {
+      setCurrentDate(parsed);
+    }
+  }, [searchParams]);
 
   // --- Event Handlers ---
   const handleAddTodo = async (text: string) => {
-    const { data: { user } } = await supabase.auth.getUser(); // Get user from client-side auth
     if (!user) {
-      console.error('User not logged in.');
+      console.error("User not logged in. Cannot add todo.");
       return;
     }
 
-    const { data, error } = await supabase
-      .from('todos')
-      .insert({ task: text, is_complete: false, user_id: user.id })
-      .select()
-      .single();
+    // Compute order to append at bottom of current day list
+    const todays = todos.filter((todo) =>
+      isSameDay(new Date(todo.inserted_at), currentDate)
+    );
+    const maxOrder = todays.reduce((max, t) => Math.max(max, t.order ?? 0), 0);
 
-    if (error) {
-      console.error('Error adding todo:', error);
-    } else if (data) {
-      setTodos(prev => [...prev, data as Todo]);
+    const newTodo: Todo = {
+      text,
+      is_complete: false,
+      inserted_at: new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        currentDate.getDate()
+      ).toISOString(),
+      user_id: user.id,
+      status: "pending" as const,
+      priority: 'medium',
+      order: maxOrder + 1,
+    };
+
+    console.log("Attempting to add new todo:", newTodo); // Debug log
+
+    try {
+      const id = await db.todos.add(newTodo);
+      console.log("Todo added to Dexie with ID:", id); // Debug log
+      setTodos((prev) => [...prev, { ...newTodo, id: id as number }]); // Ensure id is number
+    } catch (error) {
+      console.error("Error adding todo to Dexie:", error);
     }
   };
 
-  const handleToggleTodo = async (id: string) => {
-    const todoToUpdate = todos.find(todo => todo.id === id);
+  const handleToggleTodo = async (id: number) => {
+    const todoToUpdate = todos.find((todo) => todo.id === id);
     if (!todoToUpdate) return;
 
-    const { data, error } = await supabase
-      .from('todos')
-      .update({ is_complete: !todoToUpdate.done })
-      .eq('id', id)
-      .select()
-      .single();
-
-    if (error) {
-      console.error('Error toggling todo:', error);
-    } else if (data) {
-      setTodos(prevTodos => {
-        const updatedTodos = prevTodos.map(todo =>
-          todo.id === id ? { ...todo, done: !todo.done } : todo
+    try {
+      await db.todos.update(id, {
+        is_complete: !todoToUpdate.is_complete,
+        status: "synced",
+      });
+      setTodos((prevTodos) => {
+        const updatedTodos = prevTodos.map((todo) =>
+          todo.id === id
+            ? {
+                ...todo,
+                is_complete: !todoToUpdate.is_complete,
+                status: "synced" as const,
+              }
+            : todo
         );
-
         const sortedTodos = updatedTodos.sort((a, b) => {
-          if (a.done && !b.done) return 1;
-          if (!a.done && b.done) return -1;
+          if (a.is_complete && !b.is_complete) return 1;
+          if (!a.is_complete && b.is_complete) return -1;
           return 0;
         });
         return sortedTodos;
       });
+    } catch (error) {
+      console.error("Error toggling todo in Dexie:", error);
+      // reflect failure state if desired
+      setTodos((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo.id === id ? { ...todo, status: "failed" as const } : todo
+        )
+      );
     }
   };
 
-  const handleDeleteTodo = async (id: string) => {
-    const { error } = await supabase
-      .from('todos')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
-      console.error('Error deleting todo:', error);
-    } else {
-      setTodos(prev => prev.filter(todo => todo.id !== id));
+  const handleDeleteTodo = async (id: number) => {
+    try {
+      await db.todos.delete(id);
+      setTodos((prev) => prev.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error("Error deleting todo from Dexie:", error);
     }
   };
+
+  const handleEditTodo = async (id: number, newText: string) => {
+    const todoToUpdate = todos.find((todo) => todo.id === id);
+    if (!todoToUpdate) return;
+
+    try {
+      await db.todos.update(id, { text: newText, status: "synced" });
+      setTodos((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo.id === id
+            ? { ...todo, text: newText, status: "synced" as const }
+            : todo
+        )
+      );
+    } catch (error) {
+      console.error("Error updating todo text in Dexie:", error);
+      setTodos((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo.id === id ? { ...todo, status: "failed" as const } : todo
+        )
+      );
+    }
+  };
+
+  // Update priority and persist
+  const handleChangePriority = async (
+    id: number,
+    priority: 'low' | 'medium' | 'high'
+  ) => {
+    try {
+      await db.todos.update(id, { priority, status: 'synced' });
+      setTodos((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, priority, status: 'synced' } : t))
+      );
+    } catch (error) {
+      console.error('Error updating priority in Dexie:', error);
+    }
+  };
+
+  // --- Drag and Drop Reordering ---
+  const onDragStartItem = (id: number) => {
+    setDraggingId(id);
+  };
+
+  const onDragOverItem = (_id: number) => {
+    // Intentionally unused; preventDefault is handled in item component
+    void _id;
+  };
+
+  const onDropItem = async (targetId: number) => {
+    if (draggingId == null || draggingId === targetId) return;
+
+    // Work only within current day
+    const dayItems = todos
+      .filter((t) => isSameDay(new Date(t.inserted_at), currentDate))
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+    const srcIndex = dayItems.findIndex((t) => t.id === draggingId);
+    const dstIndex = dayItems.findIndex((t) => t.id === targetId);
+    if (srcIndex === -1 || dstIndex === -1) return;
+
+    const reordered = [...dayItems];
+    const [moved] = reordered.splice(srcIndex, 1);
+    reordered.splice(dstIndex, 0, moved);
+
+    // Renumber orders sequentially to keep gaps small
+    const updatedPairs = reordered.map((t, idx) => ({ id: t.id!, order: idx }));
+
+    try {
+      await Promise.all(
+        updatedPairs.map((p) => db.todos.update(p.id, { order: p.order }))
+      );
+      setTodos((prev) =>
+        prev.map((t) => {
+          const found = updatedPairs.find((p) => p.id === t.id);
+          return found ? { ...t, order: found.order } : t;
+        })
+      );
+    } catch (error) {
+      console.error('Error reordering todos in Dexie:', error);
+    } finally {
+      setDraggingId(null);
+    }
+  };
+
+  const onDragEndItem = () => setDraggingId(null);
 
   const handlePreviousDay = () => {
-    setCurrentDate(prev => {
+    setCurrentDate((prev) => {
       const newDate = new Date(prev);
       newDate.setDate(prev.getDate() - 1);
       return newDate;
@@ -113,7 +269,7 @@ export default function Home() {
   };
 
   const handleNextDay = () => {
-    setCurrentDate(prev => {
+    setCurrentDate((prev) => {
       const newDate = new Date(prev);
       newDate.setDate(prev.getDate() + 1);
       return newDate;
@@ -126,10 +282,33 @@ export default function Home() {
 
   // --- Derived State & Filtering ---
   const filteredTodos = useMemo(() => {
-    return todos.filter(todo => isSameDay(new Date(todo.createdAt), currentDate));
+    const items = todos.filter((todo) =>
+      isSameDay(new Date(todo.inserted_at), currentDate)
+    );
+    const rank = (p?: 'low' | 'medium' | 'high') =>
+      p === 'high' ? 0 : p === 'medium' ? 1 : p === 'low' ? 2 : 1;
+    items.sort((a, b) => {
+      // Incomplete first, completed last
+      if (a.is_complete && !b.is_complete) return 1;
+      if (!a.is_complete && b.is_complete) return -1;
+      // Priority: high -> medium -> low
+      const pr = rank(a.priority) - rank(b.priority);
+      if (pr !== 0) return pr;
+      // User-defined order ascending
+      const ao = a.order ?? 0;
+      const bo = b.order ?? 0;
+      return ao - bo;
+    });
+    return items;
   }, [todos, currentDate]);
 
-  const headerTitle = "Tasks";
+  const headerTitle = t("home.tasks");
+
+  if (!mounted) return null;
+
+  if (!user) {
+    return <AuthForm />;
+  }
 
   return (
     <div>
@@ -138,8 +317,8 @@ export default function Home() {
         currentDate={currentDate}
         onDateSelect={handleDateSelect}
       />
-      <main style={{ marginLeft: '280px', padding: '4rem 3rem' }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <main style={{ marginLeft: "280px", padding: "4rem 3rem" }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           <Header
             currentDate={currentDate}
             onDateChange={handleDateSelect}
@@ -148,21 +327,39 @@ export default function Home() {
           />
           <section
             style={{
-              backgroundColor: 'var(--paper)',
-              boxShadow: '0 2px 6px var(--paper-shadow)',
-              borderRadius: '4px',
-              padding: '2rem',
-              marginTop: '2rem',
+              backgroundColor: "var(--paper)",
+              boxShadow: "0 2px 6px var(--paper-shadow)",
+              borderRadius: "4px",
+              padding: "2rem",
+              marginTop: "2rem",
             }}
             aria-labelledby="todo-section-title"
           >
-            <h2 id="todo-section-title" className="sr-only">{headerTitle}</h2>
-            
-            {isSameDay(currentDate, new Date()) && <NewTodoInput onAdd={handleAddTodo} />}
-            
-            <TodoList items={filteredTodos} onToggle={handleToggleTodo} onDelete={handleDeleteTodo} />
+            <h2 id="todo-section-title" className="sr-only">
+              {headerTitle}
+            </h2>
+
+            <NewTodoInput onAdd={handleAddTodo} />
+
+            <TodoList
+              items={filteredTodos}
+              onToggle={(id) => {
+                void handleToggleTodo(id);
+              }}
+              onDelete={(id) => {
+                void handleDeleteTodo(id);
+              }}
+              onEdit={(id, newText) => {
+                void handleEditTodo(id, newText);
+              }}
+              onChangePriority={(id, p) => void handleChangePriority(id, p)}
+              onDragStart={(id) => onDragStartItem(id)}
+              onDragOver={(id) => onDragOverItem(id)}
+              onDrop={(id) => void onDropItem(id)}
+              onDragEnd={() => onDragEndItem()}
+            />
           </section>
-          <Footer note="Write it down, get it done." />
+          <Footer note={t("home.footerNote")} />
         </div>
       </main>
     </div>

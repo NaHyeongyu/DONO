@@ -1,0 +1,140 @@
+{
+  "sidebar": {
+    "nav": {
+      "label": "Goals",
+      "shortTerm": "Short-Term Goals",
+      "longTerm": "Long-Term Goals"
+    },
+    "settings": "Settings"
+  },
+  "home": {
+    "tasks": "Tasks",
+    "footerNote": "Write it down, get it done."
+  },
+  "newTodo": {
+    "placeholder": "Write your task…",
+    "add": "Add",
+    "aria": {
+      "input": "New todo input",
+      "addButton": "Add new todo"
+    }
+  },
+  "newGoal": {
+    "placeholder": "Write your goal…",
+    "add": "Add",
+    "aria": {
+      "input": "New goal input",
+      "addButton": "Add new goal"
+    }
+  },
+  "goals": {
+    "short": {
+      "title": "Short-Term Goals",
+      "desc": "Plan and track your short-term goals here. (Coming soon)"
+    },
+    "long": {
+      "title": "Long-Term Goals",
+      "desc": "Plan and track your long-term goals here. (Coming soon)"
+    },
+    "todayCount": "Today has {count} tasks.",
+    "loading": "Loading…",
+    "empty": "No goals yet. Add one above!",
+    "actions": {
+      "complete": "Complete",
+      "undo": "Undo",
+      "delete": "Delete",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "sections": {
+      "active": "Active",
+      "completed": "Completed"
+    }
+  },
+  "header": {
+    "aria": {
+      "prevDay": "Previous day",
+      "nextDay": "Next day"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "back": "Back",
+    "logout": "Logout",
+    "myInfo": "My Info",
+    "labels": {
+      "name": "Name",
+      "email": "Email",
+      "provider": "Provider",
+      "lastSignIn": "Last sign-in",
+      "joined": "Joined"
+    },
+    "notSignedIn": "Not signed in.",
+    "darkMode": {
+      "title": "Dark Mode",
+      "label": "Enable Dark Mode"
+    },
+    "language": {
+      "title": "Language",
+      "en": "English",
+      "ko": "Korean"
+    },
+    "calendar": {
+      "weekStart": {
+        "title": "Week starts on",
+        "sunday": "Sunday",
+        "monday": "Monday"
+      }
+    }
+  },
+  "calendar": {
+    "aria": {
+      "prevMonth": "Previous month",
+      "nextMonth": "Next month",
+      "selectDate": "Select {date}"
+    }
+  },
+  "todoItem": {
+    "edit": "Edit",
+    "aria": {
+      "editInput": "Edit todo",
+      "editButton": "Edit task: {text}",
+      "deleteButton": "Delete task: {text}",
+      "prioritySelect": "Change priority for: {text}",
+      "dragHandle": "Drag to reorder: {text}"
+    }
+  },
+  "progressBar": {
+    "label": "Day Progress",
+    "labelWithPercent": "Day Progress: {percent}%"
+  },
+  "auth": {
+    "subtitle": "Sign in to continue to your tasks",
+    "footerText": "By continuing you agree to our Terms and Privacy Policy."
+  },
+  "todoList": {
+    "empty": "No tasks yet. Add one above!",
+    "sections": {
+      "active": "Active",
+      "completed": "Completed"
+    }
+  },
+  "simpleTodo": {
+    "title": "Todo List",
+    "logout": "Logout",
+    "placeholder": "Add a new task",
+    "add": "Add",
+    "delete": "Delete",
+    "aria": {
+      "addButton": "Add task",
+      "logoutButton": "Log out",
+      "input": "New task input"
+    }
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  }
+}

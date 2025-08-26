@@ -17,13 +17,14 @@
 }
 
 .logo {
-  font-family: 'Merriweather', serif;
+  font-family: var(--logo-font), serif;
   font-size: 2rem;
   font-weight: 700;
   text-align: center;
   color: var(--ink);
   white-space: nowrap;
   margin-bottom: 1rem; /* Keep some margin below logo */
+  letter-spacing: 0.06em;
 }
 
 /* General styling for direct children of sidebar for better visual flow */
@@ -37,6 +38,28 @@
   padding-top: 1rem;
   border-top: 1px dashed var(--line);
   text-align: center;
+}
+
+.nav {
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px dashed var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.navLink {
+  font-size: 0.95rem;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.25rem 0;
+  transition: color 0.2s ease;
+}
+
+.navLink:hover {
+  color: var(--ink);
 }
 
 .settingsLink {

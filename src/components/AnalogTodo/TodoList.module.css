@@ -8,3 +8,12 @@
   padding: 2rem 0;
   font-style: italic;
 }
+
+/* Section titles for Active / Completed */
+.sectionTitle {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

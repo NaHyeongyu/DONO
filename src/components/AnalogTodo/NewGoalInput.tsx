@@ -2,19 +2,19 @@ import { useState, KeyboardEvent } from 'react';
 import styles from './NewTodoInput.module.css';
 import { useI18n } from '@/i18n/I18nProvider';
 
-type NewTodoInputProps = {
-  onAdd: (text: string) => void;
+type NewGoalInputProps = {
+  onAdd: (title: string) => void;
 };
 
-export default function NewTodoInput({ onAdd }: NewTodoInputProps) {
-  const [text, setText] = useState('');
-  const isEmpty = text.trim() === '';
+export default function NewGoalInput({ onAdd }: NewGoalInputProps) {
+  const [title, setTitle] = useState('');
+  const isEmpty = title.trim() === '';
   const { t } = useI18n();
 
   const handleAdd = () => {
     if (!isEmpty) {
-      onAdd(text);
-      setText('');
+      onAdd(title.trim());
+      setTitle('');
     }
   };
 
@@ -31,12 +31,12 @@ export default function NewTodoInput({ onAdd }: NewTodoInputProps) {
     <div className={styles.container}>
       <input
         type="text"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={t('newTodo.placeholder')}
+        placeholder={t('newGoal.placeholder')}
         className={styles.input}
-        aria-label={t('newTodo.aria.input')}
+        aria-label={t('newGoal.aria.input')}
         spellCheck={false}
         autoCorrect="off"
         autoCapitalize="off"
@@ -45,9 +45,9 @@ export default function NewTodoInput({ onAdd }: NewTodoInputProps) {
         onClick={handleAdd}
         disabled={isEmpty}
         className={styles.addButton}
-        aria-label={t('newTodo.aria.addButton')}
+        aria-label={t('newGoal.aria.addButton')}
       >
-        {t('newTodo.add')}
+        {t('newGoal.add')}
       </button>
     </div>
   );
