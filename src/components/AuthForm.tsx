@@ -17,6 +17,9 @@ export default function AuthForm() {
 
   if (!mounted) return null;
 
+  // Use current origin to support different ports/environments
+  const origin = typeof window !== 'undefined' ? window.location.origin : undefined;
+
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -55,7 +58,7 @@ export default function AuthForm() {
             showLinks={false}
             providers={["google"]}
             onlyThirdPartyProviders
-            redirectTo="http://localhost:3000/auth/callback"
+            redirectTo={origin ? `${origin}/auth/callback` : undefined}
           />
         </div>
 
