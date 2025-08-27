@@ -50,6 +50,9 @@
     "sections": {
       "active": "진행 중",
       "completed": "완료됨"
+    },
+    "aria": {
+      "dragHandle": "드래그하여 순서 변경: {text}"
     }
   },
   "header": {

@@ -1,35 +1,28 @@
 "use client";
 
-import { Suspense, useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Todo } from "@/types";
 import Header from "@/components/AnalogTodo/Header";
 import NewTodoInput from "@/components/AnalogTodo/NewTodoInput";
 import TodoList from "@/components/AnalogTodo/TodoList";
 import Footer from "@/components/AnalogTodo/Footer";
 import Sidebar from "@/components/AnalogTodo/Sidebar";
-import AuthForm from "@/components/AuthForm"; // Import AuthForm
-import { createClient as createClientComponentClient } from "@/utils/supabase/client"; // Import client-side client
-import { db } from "@/lib/db"; // Import Dexie DB
+import AuthForm from "@/components/AuthForm";
+import { createClient as createClientComponentClient } from "@/utils/supabase/client";
+import { db } from "@/lib/db";
 import { type User } from "@supabase/supabase-js";
 import { useI18n } from "@/i18n/I18nProvider";
 import { useSearchParams } from "next/navigation";
-
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
-// --- UTILITY FUNCTIONS ---
 
 const isSameDay = (d1: Date, d2: Date) =>
   d1.getFullYear() === d2.getFullYear() &&
   d1.getMonth() === d2.getMonth() &&
   d1.getDate() === d2.getDate();
 
-// --- COMPONENT ---
-
-function HomeInner() {
+export default function HomeClient() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [user, setUser] = useState<User | null>(null); // Keep user state for AuthForm
+  const [user, setUser] = useState<User | null>(null);
   const [mounted, setMounted] = useState(false);
   const [draggingId, setDraggingId] = useState<number | null>(null);
   const { t } = useI18n();
@@ -38,7 +31,6 @@ function HomeInner() {
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-    // Fetch user and todos from Dexie
     const fetchUserAndTodos = async () => {
       const {
         data: { user },
@@ -51,11 +43,9 @@ function HomeInner() {
 
     fetchUserAndTodos();
 
-    // Listen for auth state changes
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user || null);
-        // Re-fetch todos if auth state changes (e.g., user logs in/out)
         if (session?.user) {
           const fetchOnAuthChange = async () => {
             const allTodos = await db.todos.toArray();
@@ -63,9 +53,8 @@ function HomeInner() {
           };
           fetchOnAuthChange();
         } else {
-          setTodos([]); // Clear todos if user logs out
+          setTodos([]);
         }
-        
       }
     );
 
@@ -78,7 +67,6 @@ function HomeInner() {
     setMounted(true);
   }, []);
 
-  // Sync selected date from URL query (?date=YYYY-MM-DD)
   useEffect(() => {
     const q = searchParams.get("date");
     if (!q) return;
@@ -94,14 +82,12 @@ function HomeInner() {
     }
   }, [searchParams]);
 
-  // --- Event Handlers ---
   const handleAddTodo = async (text: string) => {
     if (!user) {
       console.error("User not logged in. Cannot add todo.");
       return;
     }
 
-    // Compute order to append at bottom of current day list
     const todays = todos.filter((todo) =>
       isSameDay(new Date(todo.inserted_at), currentDate)
     );
@@ -117,16 +103,13 @@ function HomeInner() {
       ).toISOString(),
       user_id: user.id,
       status: "pending" as const,
-      priority: 'medium',
+      priority: "medium",
       order: maxOrder + 1,
     };
 
-    console.log("Attempting to add new todo:", newTodo); // Debug log
-
     try {
       const id = await db.todos.add(newTodo);
-      console.log("Todo added to Dexie with ID:", id); // Debug log
-      setTodos((prev) => [...prev, { ...newTodo, id: id as number }]); // Ensure id is number
+      setTodos((prev) => [...prev, { ...newTodo, id: id as number }]);
     } catch (error) {
       console.error("Error adding todo to Dexie:", error);
     }
@@ -160,7 +143,6 @@ function HomeInner() {
       });
     } catch (error) {
       console.error("Error toggling todo in Dexie:", error);
-      // reflect failure state if desired
       setTodos((prevTodos) =>
         prevTodos.map((todo) =>
           todo.id === id ? { ...todo, status: "failed" as const } : todo
@@ -186,9 +168,7 @@ function HomeInner() {
       await db.todos.update(id, { text: newText, status: "synced" });
       setTodos((prevTodos) =>
         prevTodos.map((todo) =>
-          todo.id === id
-            ? { ...todo, text: newText, status: "synced" as const }
-            : todo
+          todo.id === id ? { ...todo, text: newText, status: "synced" as const } : todo
         )
       );
     } catch (error) {
@@ -201,35 +181,31 @@ function HomeInner() {
     }
   };
 
-  // Update priority and persist
   const handleChangePriority = async (
     id: number,
-    priority: 'low' | 'medium' | 'high'
+    priority: "low" | "medium" | "high"
   ) => {
     try {
-      await db.todos.update(id, { priority, status: 'synced' });
+      await db.todos.update(id, { priority, status: "synced" });
       setTodos((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, priority, status: 'synced' } : t))
+        prev.map((t) => (t.id === id ? { ...t, priority, status: "synced" } : t))
       );
     } catch (error) {
-      console.error('Error updating priority in Dexie:', error);
+      console.error("Error updating priority in Dexie:", error);
     }
   };
 
-  // --- Drag and Drop Reordering ---
   const onDragStartItem = (id: number) => {
     setDraggingId(id);
   };
 
   const onDragOverItem = (_id: number) => {
-    // Intentionally unused; preventDefault is handled in item component
     void _id;
   };
 
   const onDropItem = async (targetId: number) => {
     if (draggingId == null || draggingId === targetId) return;
 
-    // Work only within current day
     const dayItems = todos
       .filter((t) => isSameDay(new Date(t.inserted_at), currentDate))
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -242,7 +218,6 @@ function HomeInner() {
     const [moved] = reordered.splice(srcIndex, 1);
     reordered.splice(dstIndex, 0, moved);
 
-    // Renumber orders sequentially to keep gaps small
     const updatedPairs = reordered.map((t, idx) => ({ id: t.id!, order: idx }));
 
     try {
@@ -256,7 +231,7 @@ function HomeInner() {
         })
       );
     } catch (error) {
-      console.error('Error reordering todos in Dexie:', error);
+      console.error("Error reordering todos in Dexie:", error);
     } finally {
       setDraggingId(null);
     }
@@ -284,21 +259,17 @@ function HomeInner() {
     setCurrentDate(date);
   };
 
-  // --- Derived State & Filtering ---
   const filteredTodos = useMemo(() => {
     const items = todos.filter((todo) =>
       isSameDay(new Date(todo.inserted_at), currentDate)
     );
-    const rank = (p?: 'low' | 'medium' | 'high') =>
-      p === 'high' ? 0 : p === 'medium' ? 1 : p === 'low' ? 2 : 1;
+    const rank = (p?: "low" | "medium" | "high") =>
+      p === "high" ? 0 : p === "medium" ? 1 : p === "low" ? 2 : 1;
     items.sort((a, b) => {
-      // Incomplete first, completed last
       if (a.is_complete && !b.is_complete) return 1;
       if (!a.is_complete && b.is_complete) return -1;
-      // Priority: high -> medium -> low
       const pr = rank(a.priority) - rank(b.priority);
       if (pr !== 0) return pr;
-      // User-defined order ascending
       const ao = a.order ?? 0;
       const bo = b.order ?? 0;
       return ao - bo;
@@ -367,13 +338,5 @@ function HomeInner() {
         </div>
       </main>
     </div>
-  );
-}
-
-export default function Home() {
-  return (
-    <Suspense fallback={null}>
-      <HomeInner />
-    </Suspense>
   );
 }

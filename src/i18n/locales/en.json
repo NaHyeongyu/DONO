@@ -50,6 +50,9 @@
     "sections": {
       "active": "Active",
       "completed": "Completed"
+    },
+    "aria": {
+      "dragHandle": "Drag to reorder: {text}"
     }
   },
   "header": {
